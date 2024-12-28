@@ -1,62 +1,77 @@
-# Private IP configuration
-resource "google_compute_global_address" "private_ip_address" {
-  name          = "${var.instance_name}-private-ip"
-  purpose       = "VPC_PEERING"
-  address_type  = "INTERNAL"
-  prefix_length = 16
-  network       = var.network_id
+# Declare the private VPC connection for Cloud SQL
+# main.tf in the cloud-sql module
+
+
+
+locals {
+  instances_with_network = {
+    for k, v in var.sql_instances : k => merge(v, {
+      network_id = var.network_id
+    })
+  }
 }
+resource "google_sql_database_instance" "instances" {
+  for_each = local.instances_with_network
 
-resource "google_service_networking_connection" "private_vpc_connection" {
-  network                 = var.network_id
-  service                 = "servicenetworking.googleapis.com"
-  reserved_peering_ranges = [google_compute_global_address.private_ip_address.name]
-}
+  name             = each.key
+  region           = each.value.region
+  database_version = each.value.database_version
 
-# Cloud SQL instance
-resource "google_sql_database_instance" "instance" {
-  name             = var.instance_name
-  region           = var.region
-  database_version = var.database_version
-
-  depends_on = [google_service_networking_connection.private_vpc_connection]
+  # Remove the depends_on block since we've moved the networking to the VPC module
 
   settings {
-    tier = var.tier
+    tier = each.value.tier
 
     ip_configuration {
       ipv4_enabled    = false
-      private_network = var.network_id
+      private_network = each.value.network_id
     }
 
-    backup_configuration {
-      enabled                        = true
-      point_in_time_recovery_enabled = true
-      start_time                     = "02:00"
-    }
-
-    maintenance_window {
-      day          = 7
-      hour         = 3
-      update_track = "stable"
-    }
+    # Rest of your settings configuration...
   }
+
+  deletion_protection = false
 }
 
-# Database
-resource "google_sql_database" "database" {
-  name     = "${var.environment}_db"
-  instance = google_sql_database_instance.instance.name
+resource "google_sql_database" "databases" {
+  for_each = { for db_key, db_config in local.all_databases : db_key => db_config }
+
+  name     = each.value.name
+  instance = google_sql_database_instance.instances[each.value.instance_name].name
 }
 
-# User
-resource "random_password" "user_password" {
+resource "random_password" "user_passwords" {
+  for_each = { for user_key, user_config in local.all_users : user_key => user_config }
+
   length  = 16
   special = true
 }
 
-resource "google_sql_user" "user" {
-  name     = "${var.environment}_user"
-  instance = google_sql_database_instance.instance.name
-  password = random_password.user_password.result
+resource "google_sql_user" "users" {
+  for_each = { for user_key, user_config in local.all_users : user_key => user_config }
+
+  name     = each.value.name
+  instance = google_sql_database_instance.instances[each.value.instance_name].name
+  password = random_password.user_passwords[each.key].result
 }
+
+locals {
+  all_databases = flatten([
+    for instance_name, config in local.instances_with_network : [
+      for db in var.sql_databases : {
+        instance_name = instance_name
+        name          = db.name
+      }
+    ]
+  ])
+
+  all_users = flatten([
+    for instance_name, config in local.instances_with_network : [
+      for user in var.sql_users : {
+        instance_name = instance_name
+        name          = user.name
+      }
+    ]
+  ])
+}
+

@@ -1,5 +1,14 @@
 provider "google" {
+  credentials = file("/home/jugal/Downloads/dspl-24-poc-b992e28073cc.json")
   project     = var.project_id
   region      = var.region
-  credentials = file("/home/jugal/Downloads/dspl-24-poc-0eeb2b70e529.json")
+}
+
+terraform {
+  required_providers {
+    google = {
+      source  = "hashicorp/google"
+      version = "~> 5.10.0"
+    }
+  }
 }

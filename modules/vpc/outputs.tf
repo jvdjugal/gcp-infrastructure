@@ -1,10 +1,27 @@
-output "network_id" {
-  description = "The ID of the created VPC network"
-  value       = google_compute_network.vpc.id
+output "network_ids" {
+  description = "Map of VPC names to their IDs"
+  value       = { for name, vpc in google_compute_network.vpc : name => vpc.id }
+}
+
+output "network_names" {
+  description = "Map of VPC names"
+  value       = { for name, vpc in google_compute_network.vpc : name => vpc.name }
 }
 
 output "subnet_ids" {
-  description = "Map of subnet names to subnet IDs"
-  value       = { for k, v in google_compute_subnetwork.subnets : k => v.id }
+  description = "Map of subnet names to their IDs"
+  value       = { for name, subnet in google_compute_subnetwork.subnets : name => subnet.id }
 }
-// chmod 600 /path/to/your-service-account-key.json
+
+output "network_id" {
+  description = "The ID of the primary VPC network"
+  value       = google_compute_network.vpc["my-vpc"].id
+}
+variable "vpc_name" {
+  description = "The name of the VPC network"
+  type        = string
+}
+
+
+
+
