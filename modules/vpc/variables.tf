@@ -1,18 +1,17 @@
+# Project ID and Region
 variable "project_id" {
-  description = "The ID of the GCP project"
+  description = "The Google Cloud project ID."
   type        = string
 }
 
 variable "region" {
-  description = "The GCP region where resources will be created"
+  description = "The region where the resources will be created."
   type        = string
 }
 
-
-
-
+# VPC Configuration
 variable "vpcs" {
-  description = "Map of VPC configurations"
+  description = "Map of VPC configurations where each VPC has subnetworks and firewall rules."
   type = map(object({
     auto_create_subnetworks = bool
     create_nat              = bool
@@ -33,4 +32,16 @@ variable "vpcs" {
       source_ranges = list(string)
     }))
   }))
+}
+variable "create_nat" {
+  description = "Flag to enable NAT creation for the VPC."
+  type        = bool
+  default     = true
+}
+
+# VPC Peering Range
+variable "reserved_peering_ranges" {
+  description = "Reserved IP range for VPC peering."
+  type        = list(string)
+  default     = ["my-instance-private-ip"]
 }

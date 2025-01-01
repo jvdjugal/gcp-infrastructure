@@ -1,7 +1,8 @@
 terraform {
   backend "gcs" {
-    bucket = "jugal-terraform"
-    prefix = "terraform/state"
+    bucket      = "jugal-tf-bucket"
+    prefix      = "terraform/state"
+    credentials = "key.json"
   }
 }
 

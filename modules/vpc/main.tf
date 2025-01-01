@@ -5,9 +5,16 @@ resource "google_compute_network" "vpc" {
 }
 
 resource "google_service_networking_connection" "private_vpc_connection" {
-  network                 = google_compute_network.vpc[var.vpc_name].id # Changed from hardcoded "my-vpc"
+  network                 = google_compute_network.vpc["my-vpc"].id
   service                 = "servicenetworking.googleapis.com"
-  reserved_peering_ranges = [google_compute_global_address.private_ip_address.name] # Changed to reference the actual resource
+  reserved_peering_ranges = [google_compute_global_address.private_ip_address.name] # Update this line
+  timeouts {
+    create = "30m"
+    update = "40m"
+  }
+  lifecycle {
+    create_before_destroy = true
+  }
 }
 
 resource "google_compute_global_address" "private_ip_address" {
@@ -15,7 +22,8 @@ resource "google_compute_global_address" "private_ip_address" {
   purpose       = "VPC_PEERING"
   address_type  = "INTERNAL"
   prefix_length = 16
-  network       = google_compute_network.vpc[var.vpc_name].id # Changed from hardcoded "my-vpc"
+  network       = google_compute_network.vpc["my-vpc"].id # Add this line
+  project       = var.project_id                          # Add this line
 }
 
 resource "google_compute_global_address" "private_ip_alloc" {
@@ -23,9 +31,16 @@ resource "google_compute_global_address" "private_ip_alloc" {
   purpose       = "VPC_PEERING"
   address_type  = "INTERNAL"
   prefix_length = 16
-  network       = google_compute_network.vpc[var.vpc_name].id # Changed from hardcoded "my-vpc"
+  network       = google_compute_network.vpc["my-vpc"].id
   project       = var.project_id
 }
+
+resource "google_service_account" "jugal_tf_sa" {
+  account_id   = "jugal-tf-sa"
+  display_name = "Jugal Terraform Service Account"
+  project      = var.project_id
+}
+
 
 resource "google_compute_subnetwork" "subnets" {
   for_each                 = { for subnet in local.all_subnets : "${subnet.vpc_name}-${subnet.subnet.name}" => subnet }

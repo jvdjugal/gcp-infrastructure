@@ -73,10 +73,15 @@ variable "network_name" {
 
 # Subnet Configuration
 
+
 # Firewall rules configuration
 
 
 # Other required configurations
-
+variable "create_nat" {
+  description = "Flag to enable NAT creation for the VPC."
+  type        = bool
+  default     = true
+}
 
 # VPC Peering Range

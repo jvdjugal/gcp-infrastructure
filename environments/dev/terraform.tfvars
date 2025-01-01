@@ -1,8 +1,8 @@
 # General Configuration
-project_id   = "dspl-24-poc"
-region       = "us-central1"
-environment  = "dev"
-network_name = "my-vpc"
+project_id  = "dspl-24-poc"
+region      = "us-central1"
+environment = "dev"
+
 
 
 
