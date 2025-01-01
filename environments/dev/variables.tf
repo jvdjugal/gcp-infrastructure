@@ -14,10 +14,7 @@ variable "apis" {
   type        = list(string)
 }
 
-variable "vpc_name" {
-  description = "The name of the VPC network to be created"
-  type        = string
-}
+
 
 variable "environment" {
   description = "Environment for the resources (e.g., dev, staging, prod)"
