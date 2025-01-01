@@ -72,42 +72,11 @@ variable "network_name" {
 }
 
 # Subnet Configuration
-variable "all_subnets" {
-  description = "List of all subnet configurations within the VPC."
-  type = list(object({
-    vpc_name = string
-    subnet = object({
-      name          = string
-      ip_cidr_range = string
-      region        = string
-      private       = bool
-      secondary_ip_ranges = list(object({
-        range_name    = string
-        ip_cidr_range = string
-      }))
-    })
-  }))
-}
 
 # Firewall rules configuration
-variable "all_firewall_rules" {
-  description = "List of all firewall rules within the VPC."
-  type = list(object({
-    vpc_name = string
-    rule = object({
-      name          = string
-      protocol      = string
-      ports         = list(string)
-      source_ranges = list(string)
-    })
-  }))
-}
+
 
 # Other required configurations
-variable "create_nat" {
-  description = "Flag to enable NAT creation for the VPC."
-  type        = bool
-  default     = true
-}
+
 
 # VPC Peering Range
