@@ -134,17 +134,7 @@ variable "service_range_name" {
   type        = string
 }
 
-variable "node_pools" {
-  description = "Node pool configurations"
-  type = list(object({
-    name         = string
-    node_count   = number
-    machine_type = string
-    disk_size_gb = number
-    max_count    = number
-    min_count    = number
-  }))
-}
+
 
 # Cloud SQL Variables
 variable "instance_name" {
@@ -193,3 +183,68 @@ variable "vpcs" {
     }))
   }))
 }
+
+variable "node_pools" {
+  description = "List of node pool configurations"
+  type = list(object({
+    name         = string
+    machine_type = string
+    disk_size_gb = number
+    node_count   = number
+    min_count    = number
+    max_count    = number
+    node_version = string
+    image_type   = string
+    labels       = map(string)
+  }))
+  default = [
+    {
+      name         = "default-pool"
+      machine_type = "e2-medium"
+      disk_size_gb = 100
+      node_count   = 1
+      min_count    = 1
+      max_count    = 3
+      node_version = "1.27.3-gke.100"
+      image_type   = "COS_CONTAINERD"
+      labels = {
+        environment = "dev"
+      }
+    }
+  ]
+}
+
+variable "frontend_image" {
+  description = "Docker image for the frontend application"
+  type        = string
+}
+
+variable "backend_image" {
+  description = "Docker image for the backend application"
+  type        = string
+}
+
+variable "frontend_replicas" {
+  description = "Number of replicas for the frontend deployment"
+  type        = number
+  default     = 1
+}
+
+variable "backend_replicas" {
+  description = "Number of replicas for the backend deployment"
+  type        = number
+  default     = 1
+}
+
+variable "frontend_port" {
+  description = "Port number for the frontend service"
+  type        = number
+  default     = 80
+}
+
+variable "backend_port" {
+  description = "Port number for the backend service"
+  type        = number
+  default     = 5000
+}
+

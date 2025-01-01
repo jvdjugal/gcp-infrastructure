@@ -3,13 +3,4 @@ kind: ServiceAccount
 metadata:
   name: backend-sa
   annotations:
-    iam.gke.io/gcp-service-account: backend-sa@${PROJECT_ID}.iam.gserviceaccount.com
-
----
-apiVersion: v1
-kind: Secret
-metadata:
-  name: cloudsql-instance-credentials
-type: Opaque
-data:
-  credentials.json: ${BASE64_ENCODED_CREDENTIALS}
+    iam.gke.io/gcp-service-account: terraform-sa@dspl-24-poc.iam.gserviceaccount.com  # GCP service account to impersonate

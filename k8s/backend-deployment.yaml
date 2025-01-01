@@ -1,10 +1,9 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: backend
-  namespace: app
+  name: backend-deployment
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: backend
@@ -13,34 +12,9 @@ spec:
       labels:
         app: backend
     spec:
-      serviceAccountName: backend-sa
+      serviceAccountName: backend-sa  # Reference the service account
       containers:
       - name: backend
-        image: flaskapplication-flask1 
+        image: gcr.io/dspl-24-poc/backend-image:latest
         ports:
-        - containerPort: 8080
-        env:
-        - name: DB_USER
-          valueFrom:
-            secretKeyRef:
-              name: db-credentials
-              key: username
-        - name: DB_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: db-credentials
-              key: password
-        - name: DB_NAME
-          value: "my_database"
-        - name: DB_HOST
-          value: "127.0.0.1"
-        - name: DB_PORT
-          value: "5432"
-      - name: cloud-sql-proxy
-        image: gcr.io/cloud-sql-connectors/cloud-sql-proxy:latest
-        args:
-        - "--structured-logs"
-        - "--port=5432"
-        - "dspl-24-poc:us-central1:my-instance"
-        securityContext:
-          runAsNonRoot: true
+        - containerPort: 5000

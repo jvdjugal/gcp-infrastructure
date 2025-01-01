@@ -54,27 +54,7 @@ variable "node_location" {
   default     = "us-central1-a" # Replace with your desired zone for node pool
 }
 
-variable "node_pools" {
-  description = "List of node pool configurations"
-  type = list(object({
-    name         = string
-    machine_type = string
-    disk_size_gb = number
-    node_count   = number
-    min_count    = number
-    max_count    = number
-  }))
-  default = [
-    {
-      name         = "default-pool"
-      machine_type = "e2-medium"
-      disk_size_gb = 100
-      node_count   = 3
-      min_count    = 1
-      max_count    = 5
-    }
-  ]
-}
+
 
 
 variable "vpc_module" {

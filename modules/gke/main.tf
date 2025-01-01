@@ -8,8 +8,12 @@ resource "google_service_account" "gke_sa" {
 # Backend Service Account for Workload Identity
 resource "google_service_account" "backend_sa" {
   account_id   = "backend-sa"
-  display_name = "Backend Service Account for Cloud SQL"
+  display_name = "Backend Service Account"
   project      = var.project_id
+
+  lifecycle {
+    ignore_changes = [display_name]
+  }
 }
 
 # IAM roles for GKE Service Account
@@ -46,14 +50,26 @@ resource "google_service_account_iam_binding" "workload_identity_binding" {
 
 # GKE Cluster
 resource "google_container_cluster" "primary" {
-  name     = var.cluster_name
-  location = var.region
-  project  = var.project_id
+  name                = var.cluster_name
+  location            = var.region
+  project             = var.project_id
+  deletion_protection = false # Disable to allow Terraform to destroy
 
   network    = var.network_id
   subnetwork = var.vpc_module.subnet_ids["${var.network_name}-${var.subnet_name}"]
 
   initial_node_count = 1
+
+  node_config {
+    disk_type       = "pd-standard" # Explicitly use standard persistent disk
+    disk_size_gb    = 100           # Set an appropriate size
+    machine_type    = "e2-medium"   # Or whatever machine type you prefer
+    service_account = google_service_account.gke_sa.email
+
+    oauth_scopes = [
+      "https://www.googleapis.com/auth/cloud-platform"
+    ]
+  }
 
   # Enable network policy
   network_policy {
@@ -89,48 +105,56 @@ resource "google_container_cluster" "primary" {
   }
 }
 
-# Node Pools
-resource "google_container_node_pool" "pools" {
-  for_each = { for pool in var.node_pools : pool.name => pool }
+# Node Pools - Default Pool
+variable "node_pools" {
+  description = "List of node pool configurations"
+  type = list(object({
+    name         = string
+    machine_type = string
+    disk_size_gb = number
+    node_count   = number
+    min_count    = number
+    max_count    = number
+    node_version = string
+    image_type   = string
+    labels       = map(string)
+  }))
+}
 
-  name               = each.value.name
+# Then, update the node pool resource in main.tf
+resource "google_container_node_pool" "pools" {
+  name               = "default-pool"
   location           = var.region
   cluster            = google_container_cluster.primary.name
   project            = var.project_id
-  initial_node_count = each.value.node_count
+  initial_node_count = 1
 
   node_config {
-    machine_type    = each.value.machine_type
-    disk_size_gb    = each.value.disk_size_gb
+    machine_type    = "e2-medium"
     disk_type       = "pd-standard"
-    image_type      = var.image_type
+    disk_size_gb    = 100
+    image_type      = "COS_CONTAINERD"
     service_account = google_service_account.gke_sa.email
 
     oauth_scopes = [
       "https://www.googleapis.com/auth/cloud-platform"
     ]
-
-    workload_metadata_config {
-      mode = "GKE_METADATA"
-    }
-
-    labels = {
-      environment = var.environment
-    }
   }
 
   autoscaling {
-    min_node_count = each.value.min_count
-    max_node_count = each.value.max_count
+    min_node_count = 1
+    max_node_count = 3
   }
 
   management {
     auto_repair  = true
     auto_upgrade = true
   }
+}
 
-  upgrade_settings {
-    max_surge       = 1
-    max_unavailable = 0
-  }
+
+
+# Generate a random suffix for node pools (optional)
+resource "random_id" "node_suffix" {
+  byte_length = 4
 }

@@ -6,6 +6,13 @@ network_name      = "my-vpc"
 sql_instance_name = "my-instance"
 sql_tier          = "db-f1-micro"
 
+frontend_image    = "your-frontend-image"
+backend_image     = "your-backend-image"
+frontend_replicas = 2
+backend_replicas  = 2
+frontend_port     = 80
+backend_port      = 5000
+
 # VPC Configuration
 vpcs = {
   "my-vpc" = {
@@ -64,15 +71,19 @@ tier                   = "db-f1-micro"
 node_pools = [
   {
     name         = "default-pool"
-    node_count   = 3
     machine_type = "e2-medium"
     disk_size_gb = 100
-    max_count    = 5
+    node_count   = 1
     min_count    = 1
-    node_version = "1.30.6-gke.1125000"
+    max_count    = 3
+    node_version = "1.27.3-gke.100" # Use your desired GKE version
     image_type   = "COS_CONTAINERD"
+    labels = {
+      environment = "dev"
+    }
   }
 ]
+
 
 # Cloud SQL Configuration
 sql_instances = {

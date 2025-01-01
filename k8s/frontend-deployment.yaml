@@ -1,10 +1,9 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: frontend
-  namespace: app
+  name: frontend-deployment
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: frontend
@@ -15,9 +14,7 @@ spec:
     spec:
       containers:
       - name: frontend
-        image: flaskapplication-frontend1 
+        image: gcr.io/dspl-24-poc/frontend-image:latest  # <-- Use your pushed image name here
         ports:
-        - containerPort: 80
-        env:
-        - name: BACKEND_URL
-          value: "http://backend-service:8080"
+        - containerPort: 3000
+

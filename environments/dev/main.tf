@@ -13,7 +13,6 @@ module "enable_apis" {
     "iam.googleapis.com" # Added for service account management
   ]
 }
-
 # VPC Network and Subnets
 module "vpc" {
   source        = "../../modules/vpc"
@@ -23,19 +22,11 @@ module "vpc" {
   vpcs          = var.vpcs
   instance_name = "my-instance"
   network_id    = "my-vpc"
-
-
-
 }
-
 module "service-accounts" {
   source     = "../../modules/service-accounts"
   project_id = var.project_id
 }
-
-
-# dev/main.tf
-# dev/main.tf
 module "gke" {
   source                 = "../../modules/gke"
   vpc_module             = module.vpc # Pass vpc module as an input
@@ -54,14 +45,59 @@ module "gke" {
   depends_on             = [module.service-accounts]
 }
 
+module "k8s-deployment" {
+  source = "../../modules/k8s-deployment"
+
+  frontend_image    = var.frontend_image
+  backend_image     = var.backend_image
+  frontend_replicas = var.frontend_replicas
+  backend_replicas  = var.backend_replicas
+  frontend_port     = var.frontend_port
+  backend_port      = var.backend_port
+}
+
+resource "kubernetes_service" "frontend" {
+  metadata {
+    name      = "frontend-service"
+    namespace = "default"
+  }
+  spec {
+    selector = {
+      app = "frontend"
+    }
+    port {
+      port        = 80
+      target_port = 80
+    }
+  }
+}
+
+resource "kubernetes_service" "backend" {
+  metadata {
+    name      = "backend-service"
+    namespace = "default"
+  }
+  spec {
+    selector = {
+      app = "backend"
+    }
+    port {
+      port        = 5000
+      target_port = 5000
+    }
+  }
+}
 
 
+output "frontend_service" {
+  value = kubernetes_service.frontend.metadata[0].name
+}
+
+output "backend_service" {
+  value = kubernetes_service.backend.metadata[0].name
+}
 
 
-
-
-# Cloud SQL Instance
-# main.tf in the environments/dev folder
 module "cloud_sql" {
   source           = "../../modules/cloud-sql"
   tier             = var.sql_tier
@@ -74,43 +110,23 @@ module "cloud_sql" {
   sql_instances    = var.sql_instances
   sql_databases    = var.sql_databases
   sql_users        = var.sql_users
-
   # Add this line to satisfy the variable requirement
   reserved_peering_ranges = var.reserved_peering_ranges
-
-  depends_on = [module.vpc]
+  depends_on              = [module.vpc]
 }
-
-
-
-
-
-
-
-
-
-# Required Variables
-
-
-# Outputs
 output "cluster_name" {
   description = "GKE cluster name"
   value       = module.gke.cluster_name
 }
-
 output "cluster_endpoint" {
   description = "GKE cluster endpoint"
   value       = module.gke.cluster_endpoint
   sensitive   = true
 }
-
-
 output "sql_instance_names" {
   description = "Cloud SQL instance names"
   value       = module.cloud_sql.instance_names
 }
-
-
 output "network_name" {
   description = "VPC network name"
   value       = values(module.vpc.network_names)[0] # Changed from network_name to network_names

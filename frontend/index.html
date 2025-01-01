@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Todo List</title>
+</head>
+<body>
+  <h1>Todo List</h1>
+  <ul id="todo-list"></ul>
+  <input type="text" id="todo-input" placeholder="Add a new task" />
+  <button id="add-btn">Add Task</button>
+
+  <script>
+    const todoInput = document.getElementById('todo-input');
+    const addBtn = document.getElementById('add-btn');
+    const todoList = document.getElementById('todo-list');
+
+    // Function to fetch todos from the backend
+    function fetchTodos() {
+      fetch('http://backend-service:5000/todos')
+        .then(response => response.json())
+        .then(data => {
+          todoList.innerHTML = '';
+          data.forEach(todo => {
+            const li = document.createElement('li');
+            li.textContent = todo.todo;
+            todoList.appendChild(li);
+          });
+        });
+    }
+
+    // Function to add a new todo
+    function addTodo() {
+      const todoText = todoInput.value;
+      fetch('http://backend-service:5000/todos', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ todo: todoText }),
+      })
+        .then(() => {
+          fetchTodos();
+        });
+    }
+
+    // Add event listener for button click
+    addBtn.addEventListener('click', addTodo);
+
+    // Initial fetch of todos
+    fetchTodos();
+  </script>
+</body>
+</html>
