@@ -19,11 +19,11 @@ resource "google_compute_global_address" "private_ip_address" {
 }
 
 resource "google_compute_global_address" "private_ip_alloc" {
-  name          = "${var.vpc_name}-private-ip-alloc" # Changed from instance_name to vpc_name
+  name          = "${var.vpc_name}-private-ip-alloc"
   purpose       = "VPC_PEERING"
   address_type  = "INTERNAL"
   prefix_length = 16
-  network       = google_compute_network.vpc["my-vpc"].id
+  network       = google_compute_network.vpc[var.vpc_name].id # Changed from hardcoded "my-vpc"
   project       = var.project_id
 }
 
