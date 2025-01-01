@@ -1,108 +1,33 @@
 # General Variables
-variable "project_id" {
-  description = "Google Cloud project ID"
-  type        = string
-}
-
-variable "region" {
-  description = "Google Cloud region"
-  type        = string
-  default     = "us-central1"
-}
-variable "apis" {
-  description = "List of Google APIs to enable"
-  type        = list(string)
-}
-
-
-
 variable "environment" {
   description = "Environment for the resources (e.g., dev, staging, prod)"
   type        = string
 }
 
-
-# VPC and Subnet Variables
-variable "network_name" {
-  description = "The name of the VPC network"
+variable "project_id" {
+  description = "GCP Project ID"
   type        = string
 }
 
-
-
-
-
-
-
-
-
-variable "subnet_name" {
-  description = "Name of the subnet"
-  type        = string
-  default     = "gke-subnet" # Providing a default value
-}
-
-variable "vpc_name" {
-  description = "The name of the VPC network"
-  type        = string
-}
-
-# variables.tf in the environments/dev folder
-# modules/cloud-sql/variables.tf
-variable "reserved_peering_ranges" {
-  description = "The reserved IP range for VPC peering"
+variable "apis" {
+  description = "List of APIs to enable"
   type        = list(string)
-  default     = [] # Making it optional by providing a default value
 }
 
-
-
-
-
-
-
-
-variable "subnet_configs" {
-  description = "List of subnet configurations"
-  type = list(object({
-    name          = string
-    ip_cidr_range = string
-    region        = string
-    private       = bool
-    secondary_ip_ranges = list(object({
-      range_name    = string
-      ip_cidr_range = string
-    }))
-  }))
-}
-
-# GKE Cluster Variables
-
-
-variable "master_ipv4_cidr_block" {
-  description = "The CIDR block for the GKE master endpoint"
+# Project ID and Region
+variable "project_id" {
+  description = "The Google Cloud project ID."
   type        = string
 }
 
-variable "pod_range_name" {
-  description = "The name of the secondary IP range for Pods"
+variable "region" {
+  description = "The region where the resources will be created."
   type        = string
 }
 
-variable "service_range_name" {
-  description = "The name of the secondary IP range for Services"
-  type        = string
-}
-
-
-
-# Cloud SQL Variables
-
-
-
-# Add this to your existing variables.tf
+# VPC Configuration
 variable "vpcs" {
-  description = "Map of VPC configurations"
+  description = "Map of VPC configurations where each VPC has subnetworks and firewall rules."
   type = map(object({
     auto_create_subnetworks = bool
     create_nat              = bool
@@ -123,10 +48,84 @@ variable "vpcs" {
       source_ranges = list(string)
     }))
   }))
-  validation {
-    condition     = length(keys(var.vpcs)) > 0
-    error_message = "At least one VPC configuration is required."
-  }
 }
 
+variable "vpc_name" {
+  description = "The name of the VPC to be used."
+  type        = string
+}
+
+# VPC Peering Configuration
+variable "reserved_peering_ranges" {
+  description = "List of reserved IP ranges for VPC peering."
+  type        = list(string)
+  default     = ["my-instance-private-ip"]
+}
+
+# Google APIs
+variable "apis" {
+  description = "List of Google Cloud APIs to enable for the project."
+  type        = list(string)
+  default = [
+    "compute.googleapis.com",
+    "sqladmin.googleapis.com",
+    "container.googleapis.com",
+    "servicenetworking.googleapis.com",
+    "cloudresourcemanager.googleapis.com",
+    "iam.googleapis.com"
+  ]
+}
+
+# Network configuration
+variable "network_name" {
+  description = "Name of the network for VPC."
+  type        = string
+  default     = "my-vpc"
+}
+
+# Subnet Configuration
+variable "all_subnets" {
+  description = "List of all subnet configurations within the VPC."
+  type = list(object({
+    vpc_name = string
+    subnet = object({
+      name          = string
+      ip_cidr_range = string
+      region        = string
+      private       = bool
+      secondary_ip_ranges = list(object({
+        range_name    = string
+        ip_cidr_range = string
+      }))
+    })
+  }))
+}
+
+# Firewall rules configuration
+variable "all_firewall_rules" {
+  description = "List of all firewall rules within the VPC."
+  type = list(object({
+    vpc_name = string
+    rule = object({
+      name          = string
+      protocol      = string
+      ports         = list(string)
+      source_ranges = list(string)
+    })
+  }))
+}
+
+# Other required configurations
+variable "create_nat" {
+  description = "Flag to enable NAT creation for the VPC."
+  type        = bool
+  default     = true
+}
+
+# VPC Peering Range
+variable "reserved_peering_ranges" {
+  description = "Reserved IP range for VPC peering."
+  type        = list(string)
+  default     = ["my-instance-private-ip"]
+}
 
