@@ -4,10 +4,7 @@ provider "google" {
   region      = var.region
 }
 
-provider "kubernetes" {
-  config_path    = "~/.kube/config"                                          # Path to kubeconfig file
-  config_context = "gke_${var.project_id}_${var.region}_${var.cluster_name}" # Replace with your actual context
-}
+
 
 terraform {
   required_providers {

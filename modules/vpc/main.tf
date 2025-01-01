@@ -5,28 +5,21 @@ resource "google_compute_network" "vpc" {
 }
 
 resource "google_service_networking_connection" "private_vpc_connection" {
-  network                 = google_compute_network.vpc["my-vpc"].id
+  network                 = google_compute_network.vpc[var.vpc_name].id # Changed from hardcoded "my-vpc"
   service                 = "servicenetworking.googleapis.com"
-  reserved_peering_ranges = ["my-instance-private-ip"]
-  timeouts {
-    create = "30m"
-    update = "40m"
-  }
-  lifecycle {
-    create_before_destroy = true
-  }
+  reserved_peering_ranges = [google_compute_global_address.private_ip_address.name] # Changed to reference the actual resource
 }
 
 resource "google_compute_global_address" "private_ip_address" {
-  name          = "${var.instance_name}-private-ip"
+  name          = "${var.vpc_name}-private-ip"
   purpose       = "VPC_PEERING"
   address_type  = "INTERNAL"
   prefix_length = 16
-  network       = var.network_id
+  network       = google_compute_network.vpc[var.vpc_name].id # Changed from hardcoded "my-vpc"
 }
 
 resource "google_compute_global_address" "private_ip_alloc" {
-  name          = "${var.vpc_name}-private-ip-alloc"
+  name          = "${var.vpc_name}-private-ip-alloc" # Changed from instance_name to vpc_name
   purpose       = "VPC_PEERING"
   address_type  = "INTERNAL"
   prefix_length = 16

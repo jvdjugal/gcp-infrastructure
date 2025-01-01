@@ -8,15 +8,7 @@ variable "region" {
   type        = string
 }
 
-variable "instance_name" {
-  description = "The name of the instance"
-  type        = string
-}
 
-variable "network_id" {
-  description = "The ID of the network"
-  type        = string
-}
 
 
 variable "vpcs" {
