@@ -4,15 +4,7 @@ variable "environment" {
   type        = string
 }
 
-variable "project_id" {
-  description = "GCP Project ID"
-  type        = string
-}
 
-variable "apis" {
-  description = "List of APIs to enable"
-  type        = list(string)
-}
 
 # Project ID and Region
 variable "project_id" {
@@ -56,11 +48,7 @@ variable "vpc_name" {
 }
 
 # VPC Peering Configuration
-variable "reserved_peering_ranges" {
-  description = "List of reserved IP ranges for VPC peering."
-  type        = list(string)
-  default     = ["my-instance-private-ip"]
-}
+
 
 # Google APIs
 variable "apis" {
@@ -123,9 +111,3 @@ variable "create_nat" {
 }
 
 # VPC Peering Range
-variable "reserved_peering_ranges" {
-  description = "Reserved IP range for VPC peering."
-  type        = list(string)
-  default     = ["my-instance-private-ip"]
-}
-
