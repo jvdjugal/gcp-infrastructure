@@ -1,6 +1,22 @@
-locals {
-  service_account_email = "jugal-tf-sa@dspl-24-poc.iam.gserviceaccount.com" # Your existing service account
+
+
+# Service Account for GKE Node Pool
+resource "google_service_account" "gke_sa" {
+  account_id   = "${var.cluster_name}-sa"
+  display_name = "GKE Service Account for ${var.cluster_name}"
+  project      = var.project_id
 }
+
+# IAM Role for the GKE Service Account to interact with resources
+//give these permission list in .tfvars
+resource "google_project_iam_member" "gke_sa_permissions" {
+  for_each = { for idx, perm in var.gke_sa_permissions : idx => perm }
+
+  project = var.project_id
+  role    = each.value.role
+  member  = each.value.member
+}
+
 
 
 
@@ -67,7 +83,7 @@ resource "google_container_node_pool" "primary_nodes" {
     disk_size_gb = var.node_disk_size_gb
     disk_type    = var.node_disk_type
 
-    service_account = var.service_account_email # Referencing the service account from terraform.tfvars
+    service_account = google_service_account.gke_sa.email
     oauth_scopes = [
       "https://www.googleapis.com/auth/cloud-platform"
     ]

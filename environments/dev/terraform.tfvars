@@ -41,7 +41,7 @@ vpcs = {
 vpc_name = "my-vpc"
 
 #Custom Service account
-service_account_email = "jugal-tf-sa@dspl-24-poc.iam.gserviceaccount.com"
+
 
 
 # GKE Configuration
@@ -57,6 +57,17 @@ node_machine_type          = "e2-micro"
 node_disk_size_gb          = 30
 node_disk_type             = "pd-ssd"
 
+# Permission List in .tfvars file
+gke_sa_permissions = [
+  {
+    role   = "roles/container.nodeServiceAgent"
+    member = "serviceAccount:${google_service_account.gke_sa.email}"
+  },
+  {
+    role   = "roles/storage.objectViewer"
+    member = "serviceAccount:${google_service_account.gke_sa.email}"
+  }
+]
 
 
 # Required APIs

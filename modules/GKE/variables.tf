@@ -79,8 +79,17 @@ variable "autoscaling_max_node_count" {
   default     = 2
 }
 
-variable "service_account_email" {
-  description = "The custom service account email to use for the GKE node pool"
-  type        = string
+variable "google_service_account_email" {
+
 }
+
+variable "gke_sa_permissions" {
+  description = "List of IAM roles and associated members for the GKE service account."
+  type = list(object({
+    role   = string
+    member = string
+  }))
+  default = []
+}
+
 
