@@ -48,8 +48,8 @@ pods_range_name            = "gke-pods"
 services_range_name        = "gke-services"
 primary_node_count         = 1
 autoscaling_min_node_count = 1
-autoscaling_max_node_count = 3
-node_machine_type          = "e2-standard-2"
+autoscaling_max_node_count = 2
+node_machine_type          = "e2-micro"
 node_disk_size_gb          = 30
 node_disk_type             = "pd-ssd"
 
