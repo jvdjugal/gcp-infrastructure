@@ -40,6 +40,10 @@ vpcs = {
 # VPC name configuration
 vpc_name = "my-vpc"
 
+#Custom Service account
+service_account_email = "jugal-tf-sa@dspl-24-poc.iam.gserviceaccount.com"
+
+
 # GKE Configuration
 cluster_name               = "dev-cluster"
 master_ipv4_cidr_block     = "172.16.0.0/28"

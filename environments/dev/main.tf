@@ -19,6 +19,8 @@ module "vpc" {
 module "GKE" {
   source = "../../modules/GKE"
 
+  service_account_email = var.service_account_email # Pass the service account email
+
   project_id              = var.project_id
   cluster_name            = var.cluster_name
   zone                    = var.zone
@@ -28,6 +30,7 @@ module "GKE" {
   authorized_network_cidr = var.authorized_network_cidr
   pods_range_name         = var.pods_range_name
   services_range_name     = var.services_range_name
+
 
   depends_on = [module.vpc]
 }

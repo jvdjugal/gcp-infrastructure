@@ -1,4 +1,6 @@
-
+locals {
+  service_account_email = "jugal-tf-sa@dspl-24-poc.iam.gserviceaccount.com" # Your existing service account
+}
 
 
 
@@ -61,11 +63,11 @@ resource "google_container_node_pool" "primary_nodes" {
   }
 
   node_config {
-    machine_type = var.node_machine_type # Using variable
-    disk_size_gb = var.node_disk_size_gb # Using variable
-    disk_type    = var.node_disk_type    # Using variable
+    machine_type = var.node_machine_type
+    disk_size_gb = var.node_disk_size_gb
+    disk_type    = var.node_disk_type
 
-
+    service_account = var.service_account_email # Referencing the service account from terraform.tfvars
     oauth_scopes = [
       "https://www.googleapis.com/auth/cloud-platform"
     ]
