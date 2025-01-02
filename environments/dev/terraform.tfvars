@@ -47,12 +47,13 @@ vpcs = {
 vpc_name = "my-vpc"
 
 apis = [
+  "cloudresourcemanager.googleapis.com",
+  "iam.googleapis.com",
   "compute.googleapis.com",
   "sqladmin.googleapis.com",
   "container.googleapis.com",
   "servicenetworking.googleapis.com",
-  "cloudresourcemanager.googleapis.com",
-  "iam.googleapis.com"
+
 ]
 
 

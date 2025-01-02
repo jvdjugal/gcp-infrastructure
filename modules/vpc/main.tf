@@ -13,7 +13,7 @@ resource "google_service_networking_connection" "private_vpc_connection" {
     update = "40m"
   }
   lifecycle {
-    create_before_destroy = true
+    create_before_destroy = false
   }
 }
 
