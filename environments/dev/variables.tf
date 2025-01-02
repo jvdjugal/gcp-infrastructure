@@ -3,15 +3,11 @@ variable "environment" {
   description = "Environment for the resources (e.g., dev, staging, prod)"
   type        = string
 }
-
-
-
 # Project ID and Region
 variable "project_id" {
   description = "The Google Cloud project ID."
   type        = string
 }
-
 variable "region" {
   description = "The region where the resources will be created."
   type        = string
@@ -47,41 +43,11 @@ variable "vpc_name" {
   type        = string
 }
 
-# VPC Peering Configuration
-
-
 # Google APIs
 variable "apis" {
   description = "List of Google Cloud APIs to enable for the project."
   type        = list(string)
-  default = [
-    "compute.googleapis.com",
-    "sqladmin.googleapis.com",
-    "container.googleapis.com",
-    "servicenetworking.googleapis.com",
-    "cloudresourcemanager.googleapis.com",
-    "iam.googleapis.com"
-  ]
 }
 
-# Network configuration
-variable "network_name" {
-  description = "Name of the network for VPC."
-  type        = string
-  default     = "my-vpc"
-}
-
-# Subnet Configuration
 
 
-# Firewall rules configuration
-
-
-# Other required configurations
-variable "create_nat" {
-  description = "Flag to enable NAT creation for the VPC."
-  type        = bool
-  default     = true
-}
-
-# VPC Peering Range

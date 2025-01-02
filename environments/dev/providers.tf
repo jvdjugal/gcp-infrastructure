@@ -3,10 +3,6 @@ provider "google" {
   project     = var.project_id
   region      = var.region
 }
-
-
-
-//verify this with the official documentation
 terraform {
   required_providers {
     google = {
@@ -20,4 +16,3 @@ terraform {
   }
 }
 
-//terraform import google_service_account.jugal_tf_sa projects/dspl-24-poc/serviceAccounts/jugal-tf-sa@dspl-24-poc.iam.gserviceaccount.com

@@ -41,7 +41,6 @@ resource "google_service_account" "jugal_tf_sa" {
   project      = var.project_id
 }
 
-
 resource "google_compute_subnetwork" "subnets" {
   for_each                 = { for subnet in local.all_subnets : "${subnet.vpc_name}-${subnet.subnet.name}" => subnet }
   name                     = each.value.subnet.name
@@ -64,7 +63,6 @@ resource "google_compute_subnetwork" "subnets" {
     metadata             = "INCLUDE_ALL_METADATA"
   }
 }
-
 resource "google_compute_firewall" "rules" {
   for_each = { for rule in local.all_firewall_rules : "${rule.vpc_name}-${rule.rule.name}" => rule }
 
@@ -78,7 +76,6 @@ resource "google_compute_firewall" "rules" {
 
   source_ranges = each.value.rule.source_ranges
 }
-
 resource "google_compute_router" "router" {
   for_each = { for name, vpc in var.vpcs : name => vpc if vpc.create_nat }
 
@@ -86,7 +83,6 @@ resource "google_compute_router" "router" {
   region  = var.region
   network = google_compute_network.vpc[each.key].id
 }
-
 resource "google_compute_router_nat" "nat" {
   for_each = { for name, vpc in var.vpcs : name => vpc if vpc.create_nat }
 
@@ -96,7 +92,6 @@ resource "google_compute_router_nat" "nat" {
   nat_ip_allocate_option             = "AUTO_ONLY"
   source_subnetwork_ip_ranges_to_nat = "ALL_SUBNETWORKS_ALL_IP_RANGES"
 }
-
 locals {
   all_subnets = flatten([
     for vpc_name, vpc in var.vpcs : [

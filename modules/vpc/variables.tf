@@ -33,15 +33,3 @@ variable "vpcs" {
     }))
   }))
 }
-variable "create_nat" {
-  description = "Flag to enable NAT creation for the VPC."
-  type        = bool
-  default     = true
-}
-
-# VPC Peering Range
-variable "reserved_peering_ranges" {
-  description = "Reserved IP range for VPC peering."
-  type        = list(string)
-  default     = ["my-instance-private-ip"]
-}

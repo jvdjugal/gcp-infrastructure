@@ -3,11 +3,6 @@ project_id  = "dspl-24-poc"
 region      = "us-central1"
 environment = "dev"
 
-
-
-
-
-
 # VPC Configuration
 vpcs = {
   "my-vpc" = {
@@ -56,5 +51,3 @@ apis = [
 
 ]
 
-
-# Other existing configurations...
