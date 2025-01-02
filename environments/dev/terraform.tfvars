@@ -57,17 +57,15 @@ node_machine_type          = "e2-micro"
 node_disk_size_gb          = 30
 node_disk_type             = "pd-ssd"
 
+google_service_account_email = "gke-node-pool-sa@dspl-24-poc.iam.gserviceaccount.com"
+network_id                   = "projects/dspl-24-poc/global/networks/my-vpc"
+subnet_id                    = "projects/dspl-24-poc/regions/us-central1/subnetworks/gke-subnet"
+zone                         = "us-central1-a"
+
+
+
 # Permission List in .tfvars file
-gke_sa_permissions = [
-  {
-    role   = "roles/container.nodeServiceAgent"
-    member = "serviceAccount:${google_service_account.gke_sa.email}"
-  },
-  {
-    role   = "roles/storage.objectViewer"
-    member = "serviceAccount:${google_service_account.gke_sa.email}"
-  }
-]
+
 
 
 # Required APIs

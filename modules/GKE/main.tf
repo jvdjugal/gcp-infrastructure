@@ -7,15 +7,21 @@ resource "google_service_account" "gke_sa" {
   project      = var.project_id
 }
 
+
 # IAM Role for the GKE Service Account to interact with resources
 //give these permission list in .tfvars
 resource "google_project_iam_member" "gke_sa_permissions" {
-  for_each = { for idx, perm in var.gke_sa_permissions : idx => perm }
-
   project = var.project_id
-  role    = each.value.role
-  member  = each.value.member
+  role    = "roles/container.nodeServiceAgent"
+  member  = "serviceAccount:${google_service_account.gke_sa.email}"
 }
+
+resource "google_project_iam_member" "gke_sa_storage_permissions" {
+  project = var.project_id
+  role    = "roles/storage.objectViewer"
+  member  = "serviceAccount:${google_service_account.gke_sa.email}"
+}
+
 
 
 

@@ -21,11 +21,12 @@ module "GKE" {
 
 
 
-  project_id                   = var.project_id
-  cluster_name                 = var.cluster_name
-  zone                         = var.zone
-  network_id                   = module.vpc.network_id # Adjusted to match the output name
-  subnet_id                    = module.vpc.subnet_ids["gke-subnet"]
+  project_id   = var.project_id
+  cluster_name = var.cluster_name
+  zone         = var.zone
+  network_id   = module.vpc.network_id # Adjusted to match the output name
+  subnet_id    = module.vpc.subnet_ids["my-vpc-gke-subnet"]
+
   master_ipv4_cidr_block       = var.master_ipv4_cidr_block
   authorized_network_cidr      = var.authorized_network_cidr
   pods_range_name              = var.pods_range_name
