@@ -14,4 +14,9 @@ output "cluster_name" {
   value       = google_container_cluster.primary.name
 }
 
+output "service_account_email" {
+  description = "The email address of the service account created for GKE nodes"
+  value       = google_service_account.gke_sa.email
+}
+
 

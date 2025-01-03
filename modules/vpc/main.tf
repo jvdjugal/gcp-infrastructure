@@ -41,23 +41,23 @@ resource "google_compute_network" "vpc" {
 }
 
 # Global IP Address for VPC Peering
+# modules/vpc/main.tf
+
+# Global IP Address for VPC Peering
 resource "google_compute_global_address" "private_ip_addresses" {
-  for_each      = toset(["primary", "secondary"])
-  name          = "${local.resource_prefix}-${var.vpc_name}-private-ip-${each.key}"
+  name          = "${local.resource_prefix}-${var.vpc_name}-private-ip-1"
   purpose       = "VPC_PEERING"
   address_type  = "INTERNAL"
   prefix_length = 16
   network       = google_compute_network.vpc["my-vpc"].id
   project       = var.project_id
-
-
 }
 
 # Service Networking Connection
 resource "google_service_networking_connection" "private_vpc_connection" {
   network                 = google_compute_network.vpc["my-vpc"].id
   service                 = "servicenetworking.googleapis.com"
-  reserved_peering_ranges = [google_compute_global_address.private_ip_addresses["primary"].name]
+  reserved_peering_ranges = [google_compute_global_address.private_ip_addresses.name]
 
   timeouts {
     create = "30m"

@@ -10,9 +10,10 @@ resource "google_service_account" "gke_sa" {
 
 # IAM Role for the GKE Service Account to interact with resources
 //give these permission list in .tfvars
+# IAM Role bindings for the service account
 resource "google_project_iam_member" "gke_sa_permissions" {
   project = var.project_id
-  role    = "roles/container.nodeServiceAgent"
+  role    = "roles/container.nodeServiceAccount"
   member  = "serviceAccount:${google_service_account.gke_sa.email}"
 }
 
@@ -21,6 +22,7 @@ resource "google_project_iam_member" "gke_sa_storage_permissions" {
   role    = "roles/storage.objectViewer"
   member  = "serviceAccount:${google_service_account.gke_sa.email}"
 }
+
 
 
 
@@ -43,13 +45,16 @@ resource "google_container_cluster" "primary" {
     master_ipv4_cidr_block  = var.master_ipv4_cidr_block
   }
 
+  /*
+
+enable DNS access without IP address restrictions.
   master_authorized_networks_config {
     cidr_blocks {
       cidr_block   = var.authorized_network_cidr
       display_name = "VPC"
     }
   }
-
+*/
   workload_identity_config {
     workload_pool = "${var.project_id}.svc.id.goog"
   }
@@ -69,6 +74,8 @@ resource "google_container_cluster" "primary" {
   release_channel {
     channel = "REGULAR"
   }
+  deletion_protection = false
+
 }
 
 resource "google_container_node_pool" "primary_nodes" {

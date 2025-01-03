@@ -24,7 +24,7 @@ module "GKE" {
   project_id   = var.project_id
   cluster_name = var.cluster_name
   zone         = var.zone
-  network_id   = module.vpc.network_id # Adjusted to match the output name
+  network_id   = module.vpc.network_id["my-vpc"]
   subnet_id    = module.vpc.subnet_ids["my-vpc-gke-subnet"]
 
   master_ipv4_cidr_block       = var.master_ipv4_cidr_block
