@@ -107,11 +107,8 @@ variable "autoscaling_max_node_count" {
 }
 
 variable "gke_sa_permissions" {
-  description = "List of IAM roles and associated members for the GKE service account."
-  type = list(object({
-    role   = string
-    member = string
-  }))
+  description = "List of IAM roles to assign to the GKE service account."
+  type        = list(string)
 
 }
 
