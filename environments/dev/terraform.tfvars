@@ -53,6 +53,8 @@ node_machine_type          = "e2-micro"
 node_disk_size_gb          = 30
 node_disk_type             = "pd-ssd"
 
+database_machine_type = "db-f1-micro"
+
 
 
 zone = "us-central1-a"
@@ -75,3 +77,13 @@ gke_sa_permissions = [
 ]
 
 
+database_flags = [
+  {
+    name  = "max_connections"
+    value = "100"
+  },
+  {
+    name  = "slow_query_log"
+    value = "on"
+  }
+]

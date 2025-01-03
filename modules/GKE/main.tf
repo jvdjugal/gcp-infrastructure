@@ -77,10 +77,12 @@ resource "google_container_cluster" "primary" {
   initial_node_count       = 1
 
   private_cluster_config {
-    enable_private_nodes    = false #This is used to disable public IP  
-    enable_private_endpoint = false
+    enable_private_nodes    = true  # Disable public IP for nodes
+    enable_private_endpoint = false # API server access via private IP only
 
+    master_ipv4_cidr_block = "172.16.0.0/28" # CIDR block for the private master endpoint
   }
+
 
   workload_identity_config {
     workload_pool = "${var.project_id}.svc.id.goog"
