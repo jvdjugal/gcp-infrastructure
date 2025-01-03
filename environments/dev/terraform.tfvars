@@ -67,3 +67,7 @@ apis = [
   "servicenetworking.googleapis.com",
   "dns.googleapis.com"
 ]
+
+# Permission List in .tfvars file
+
+

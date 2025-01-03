@@ -19,10 +19,12 @@ module "vpc" {
 module "GKE" {
   source = "../../modules/GKE"
 
-  project_id          = var.project_id
-  cluster_name        = var.cluster_name
-  zone                = var.zone
-  network_id          = module.vpc.network_id["my-vpc"]
+  project_id   = var.project_id
+  cluster_name = var.cluster_name
+  zone         = var.zone
+  network_id   = module.vpc.network_id["my-vpc"]
+
+
   subnet_id           = module.vpc.subnet_ids["my-vpc-gke-subnet"]
   pods_range_name     = var.pods_range_name
   services_range_name = var.services_range_name

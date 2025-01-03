@@ -14,9 +14,11 @@ output "subnet_ids" {
 }
 
 output "network_id" {
-  description = "The ID of the primary VPC network"
-  value       = google_compute_network.vpc["my-vpc"].id
+  value = { for vpc_name, vpc in google_compute_network.vpc : vpc_name => vpc.self_link }
 }
+
+
+
 variable "vpc_name" {
   description = "The name of the VPC network"
   type        = string

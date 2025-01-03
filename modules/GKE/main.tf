@@ -40,8 +40,8 @@ resource "google_container_cluster" "primary" {
   initial_node_count       = 1
 
   private_cluster_config {
-    enable_private_nodes    = true #This is used to disable public IP  
-    enable_private_endpoint = true
+    enable_private_nodes    = false #This is used to disable public IP  
+    enable_private_endpoint = false
 
   }
 

@@ -106,6 +106,15 @@ variable "autoscaling_max_node_count" {
   default     = 2
 }
 
+variable "gke_sa_permissions" {
+  description = "List of IAM roles and associated members for the GKE service account."
+  type = list(object({
+    role   = string
+    member = string
+  }))
+  default = []
+}
+
 
 
 
