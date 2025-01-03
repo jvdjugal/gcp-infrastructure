@@ -112,7 +112,7 @@ variable "gke_sa_permissions" {
     role   = string
     member = string
   }))
-  default = []
+
 }
 
 

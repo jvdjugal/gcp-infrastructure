@@ -69,5 +69,16 @@ apis = [
 ]
 
 # Permission List in .tfvars file
+# Permission List in .tfvars file
+gke_sa_permissions = [
+  {
+    role   = "roles/container.nodeServiceAgent"
+    member = "serviceAccount:${google_service_account.gke_sa.email}"
+  },
+  {
+    role   = "roles/storage.objectViewer"
+    member = "serviceAccount:${google_service_account.gke_sa.email}"
+  }
+]
 
 

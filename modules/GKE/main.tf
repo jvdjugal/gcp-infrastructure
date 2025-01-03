@@ -12,15 +12,11 @@ resource "google_service_account" "gke_sa" {
 //give these permission list in .tfvars
 # IAM Role bindings for the service account
 resource "google_project_iam_member" "gke_sa_permissions" {
-  project = var.project_id
-  role    = "roles/container.nodeServiceAccount"
-  member  = "serviceAccount:${google_service_account.gke_sa.email}"
-}
+  for_each = { for idx, perm in var.gke_sa_permissions : idx => perm }
 
-resource "google_project_iam_member" "gke_sa_storage_permissions" {
   project = var.project_id
-  role    = "roles/storage.objectViewer"
-  member  = "serviceAccount:${google_service_account.gke_sa.email}"
+  role    = each.value.role
+  member  = each.value.member
 }
 
 
@@ -34,6 +30,48 @@ resource "google_container_cluster" "primary" {
   project    = var.project_id
   network    = var.network_id
   subnetwork = var.subnet_id
+
+  # Enable shielded nodes for additional security
+  enable_shielded_nodes = true
+
+  # Maintenance policy for upgrades
+  maintenance_policy {
+    recurring_window {
+      start_time = "2023-01-01T09:00:00Z"
+      end_time   = "2023-01-01T17:00:00Z"
+      recurrence = "FREQ=WEEKLY;BYDAY=MO,WE,FR"
+    }
+  }
+
+  # Enable vertical pod autoscaling
+  vertical_pod_autoscaling {
+    enabled = true
+  }
+
+  # Cost management configuration
+  cost_management_config {
+    enabled = true
+  }
+
+
+
+  # Addons configuration
+  addons_config {
+    horizontal_pod_autoscaling {
+      disabled = false
+    }
+
+    # DNS cache configuration
+    dns_cache_config {
+      enabled = true
+    }
+  }
+
+
+
+  # Specify logging and monitoring services
+  logging_service    = "logging.googleapis.com/kubernetes"
+  monitoring_service = "monitoring.googleapis.com/kubernetes"
 
   # Disable default node pool
   remove_default_node_pool = true
@@ -86,6 +124,17 @@ resource "google_container_node_pool" "primary_nodes" {
     disk_size_gb = var.node_disk_size_gb
     disk_type    = var.node_disk_type
 
+    # Shielded instance configuration for secure VMs
+    shielded_instance_config {
+      enable_integrity_monitoring = true
+      enable_secure_boot          = true
+    }
+
+    # Enable Google Cloud Filestore (optional, set false if not required)
+    gcfs_config {
+      enabled = true
+    }
+
     service_account = google_service_account.gke_sa.email
     oauth_scopes = [
       "https://www.googleapis.com/auth/cloud-platform"
@@ -94,5 +143,11 @@ resource "google_container_node_pool" "primary_nodes" {
     workload_metadata_config {
       mode = "GKE_METADATA"
     }
+  }
+
+
+  upgrade_settings {
+    max_surge       = 1
+    max_unavailable = 0
   }
 }
