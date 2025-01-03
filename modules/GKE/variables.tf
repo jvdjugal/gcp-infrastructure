@@ -23,15 +23,6 @@ variable "subnet_id" {
   type        = string
 }
 
-variable "master_ipv4_cidr_block" {
-  description = "The IP range in CIDR notation for the master network"
-  type        = string
-}
-
-variable "authorized_network_cidr" {
-  description = "The CIDR range for authorized networks"
-  type        = string
-}
 
 variable "pods_range_name" {
   description = "The name of the secondary IP range for pods"
@@ -79,9 +70,7 @@ variable "autoscaling_max_node_count" {
   default     = 2
 }
 
-variable "google_service_account_email" {
 
-}
 
 variable "gke_sa_permissions" {
   description = "List of IAM roles and associated members for the GKE service account."

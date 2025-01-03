@@ -75,8 +75,6 @@ resource "google_service_networking_connection" "private_vpc_connection" {
   ]
 }
 
-# Service Account
-
 # Subnets
 resource "google_compute_subnetwork" "subnets" {
   for_each                 = { for subnet in local.all_subnets : "${subnet.vpc_name}-${subnet.subnet.name}" => subnet }

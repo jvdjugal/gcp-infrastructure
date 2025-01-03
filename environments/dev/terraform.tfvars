@@ -40,14 +40,10 @@ vpcs = {
 # VPC name configuration
 vpc_name = "my-vpc"
 
-#Custom Service account
-
-
-
 # GKE Configuration
-cluster_name               = "dev-cluster"
-master_ipv4_cidr_block     = "172.16.0.0/28"
-authorized_network_cidr    = "10.0.0.0/16"
+cluster_name = "dev-cluster"
+//master_ipv4_cidr_block     = "172.16.0.0/28"
+//authorized_network_cidr    = "10.0.0.0/16"
 pods_range_name            = "gke-pods"
 services_range_name        = "gke-services"
 primary_node_count         = 1
@@ -60,12 +56,6 @@ node_disk_type             = "pd-ssd"
 
 
 zone = "us-central1-a"
-
-
-
-# Permission List in .tfvars file
-
-
 
 # Required APIs
 apis = [

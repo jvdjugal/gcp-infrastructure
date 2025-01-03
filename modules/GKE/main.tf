@@ -42,19 +42,9 @@ resource "google_container_cluster" "primary" {
   private_cluster_config {
     enable_private_nodes    = true #This is used to disable public IP  
     enable_private_endpoint = true
-    master_ipv4_cidr_block  = var.master_ipv4_cidr_block
+
   }
 
-  /*
-
-enable DNS access without IP address restrictions.
-  master_authorized_networks_config {
-    cidr_blocks {
-      cidr_block   = var.authorized_network_cidr
-      display_name = "VPC"
-    }
-  }
-*/
   workload_identity_config {
     workload_pool = "${var.project_id}.svc.id.goog"
   }
