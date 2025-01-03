@@ -12,13 +12,12 @@ resource "google_service_account" "gke_sa" {
 //give these permission list in .tfvars
 # IAM Role bindings for the service account
 resource "google_project_iam_member" "gke_sa_permissions" {
-  for_each = { for idx, perm in var.gke_sa_permissions : idx => perm }
+  for_each = toset(var.gke_sa_permissions)
 
   project = var.project_id
-  role    = each.value.role
-  member  = each.value.member
+  role    = each.value
+  member  = "serviceAccount:${google_service_account.gke_sa.email}"
 }
-
 
 
 
