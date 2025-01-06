@@ -8,6 +8,7 @@ resource "google_service_account" "gke_sa" {
 }
 
 
+
 # IAM Role for the GKE Service Account to interact with resources
 //give these permission list in .tfvars
 # IAM Role bindings for the service account

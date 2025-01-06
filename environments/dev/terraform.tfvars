@@ -3,6 +3,10 @@ project_id  = "dspl-24-poc"
 region      = "us-central1"
 environment = "dev"
 
+#cloud-sql
+# Cloud SQL Configuration
+database_password = "your-secure-password-here" # Consider using a secret manager in production
+
 # VPC Configuration
 vpcs = {
   "my-vpc" = {
@@ -53,7 +57,6 @@ node_machine_type          = "e2-micro"
 node_disk_size_gb          = 30
 node_disk_type             = "pd-ssd"
 
-database_machine_type = "db-f1-micro"
 
 
 
@@ -77,13 +80,3 @@ gke_sa_permissions = [
 ]
 
 
-database_flags = [
-  {
-    name  = "max_connections"
-    value = "100"
-  },
-  {
-    name  = "slow_query_log"
-    value = "on"
-  }
-]

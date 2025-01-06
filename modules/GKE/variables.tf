@@ -78,4 +78,3 @@ variable "gke_sa_permissions" {
 
 }
 
-

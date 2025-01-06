@@ -26,6 +26,7 @@ module "GKE" {
   gke_sa_permissions = var.gke_sa_permissions # Pass the permissions here
 
 
+
   subnet_id           = module.vpc.subnet_ids["my-vpc-gke-subnet"]
   pods_range_name     = var.pods_range_name
   services_range_name = var.services_range_name
@@ -34,15 +35,16 @@ module "GKE" {
 }
 
 module "cloud_sql" {
-  source = "../../modules/cloud_sql"
+  source = "../../modules/cloud-sql"
 
-  project_id     = var.project_id
-  region         = var.region
-  instance_name  = "${var.environment}-mysql-instance"
-  network_id     = module.vpc.network_id["my-vpc"]
-  database_flags = var.database_flags
+  project_id  = var.project_id
+  environment = var.environment
+  region      = var.region
+  network_id  = module.vpc.network_id["my-vpc"]
 
+  database_name     = "mydb"
+  database_user     = "dbuser"
+  database_password = var.database_password # Add this to your variables
 
   depends_on = [module.vpc]
 }
-

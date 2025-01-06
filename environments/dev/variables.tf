@@ -112,20 +112,14 @@ variable "gke_sa_permissions" {
 
 }
 
-variable "database_flags" {
-  description = "List of Cloud SQL flags that are applied to the database server"
-  type = list(object({
-    name  = string
-    value = string
-  }))
-  default = []
+
+variable "database_password" {
+  description = "Password for the database user"
+  type        = string
+  sensitive   = true
 }
 
-variable "database_machine_type" {
-  description = "The machine type for the database instance"
-  type        = string
-  default     = "db-f1-micro"
-}
+
 
 
 

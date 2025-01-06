@@ -11,7 +11,6 @@ variable "region" {
 
 # VPC Configuration
 variable "vpcs" {
-  description = "Map of VPC configurations where each VPC has subnetworks and firewall rules."
   type = map(object({
     auto_create_subnetworks = bool
     create_nat              = bool
@@ -20,22 +19,23 @@ variable "vpcs" {
       ip_cidr_range = string
       region        = string
       private       = bool
-      secondary_ip_ranges = list(object({
+      secondary_ip_ranges = optional(list(object({
         range_name    = string
         ip_cidr_range = string
-      }))
+      })))
     }))
     firewall_rules = list(object({
       name          = string
       protocol      = string
       ports         = list(string)
       source_ranges = list(string)
+      target_tags   = optional(list(string))
     }))
   }))
+  description = "Map of VPC configurations"
 }
 variable "environment" {
   description = "The environment for the deployment (e.g., dev, staging, prod)"
   type        = string
 }
-
 
