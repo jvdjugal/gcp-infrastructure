@@ -79,3 +79,9 @@ variable "database_password_secret_id" {
   description = "Secret Manager ID for the database password"
   type        = string
 }
+
+
+
+
+
+

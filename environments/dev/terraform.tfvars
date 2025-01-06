@@ -71,8 +71,7 @@ apis = [
   "container.googleapis.com",
   "servicenetworking.googleapis.com",
   "dns.googleapis.com",
-  "secretmanager.googleapis.com",
-  "cloudkms.googleapis.com" # Add this line
+  "secretmanager.googleapis.com"
 ]
 
 
