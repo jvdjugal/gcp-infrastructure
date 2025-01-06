@@ -18,6 +18,11 @@ variable "network_id" {
   type        = string
 }
 
+variable "vpc_connection" {
+  description = "The private VPC connection from the VPC module"
+  type        = any
+}
+
 variable "database_name" {
   description = "The name of the default database to create"
   type        = string
@@ -34,20 +39,6 @@ variable "database_password" {
   sensitive   = true
 }
 
-variable "authorized_networks" {
-  description = "List of authorized networks to connect to the instance"
-  type = list(object({
-    name = string
-    cidr = string
-  }))
-  default = []
-}
-
-variable "vpc_connection" {
-  description = "The private VPC connection from the VPC module"
-  type        = any # Using 'any' type since we're passing a complete resource
-}
-
 variable "instance_settings" {
   description = "Settings for the database instance"
   type = object({
@@ -57,6 +48,7 @@ variable "instance_settings" {
     disk_type         = string
   })
 }
+
 variable "backup_configuration" {
   description = "Backup configuration for the database"
   type = object({
@@ -64,6 +56,7 @@ variable "backup_configuration" {
     start_time = string
   })
 }
+
 variable "maintenance_window" {
   description = "Maintenance window configuration"
   type = object({
@@ -71,4 +64,18 @@ variable "maintenance_window" {
     hour         = number
     update_track = string
   })
+}
+
+variable "authorized_networks" {
+  description = "List of authorized networks to connect to the instance"
+  type = list(object({
+    name = string
+    cidr = string
+  }))
+  default = []
+}
+
+variable "database_password_secret_id" {
+  description = "Secret Manager ID for the database password"
+  type        = string
 }

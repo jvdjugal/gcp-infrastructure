@@ -5,7 +5,7 @@ environment = "dev"
 
 #cloud-sql
 # Cloud SQL Configuration
-database_password = "your-secure-password-here" # Consider using a secret manager in production
+database_password = "your-secure-password-here"
 
 # VPC Configuration
 vpcs = {
@@ -70,8 +70,12 @@ apis = [
   "sqladmin.googleapis.com",
   "container.googleapis.com",
   "servicenetworking.googleapis.com",
-  "dns.googleapis.com"
+  "dns.googleapis.com",
+  "secretmanager.googleapis.com",
+  "cloudkms.googleapis.com" # Add this line
 ]
+
+
 
 # Permission List in .tfvars file
 gke_sa_permissions = [
@@ -79,6 +83,7 @@ gke_sa_permissions = [
   "roles/storage.objectViewer"
 ]
 
+# Cloud SQL Configuration
 # Cloud SQL Configuration
 cloud_sql_config = {
   database_name = "mydb"

@@ -49,9 +49,21 @@ module "cloud_sql" {
   database_user     = var.cloud_sql_config.database_user
   database_password = var.database_password
 
-  instance_settings    = var.cloud_sql_config.instance_settings
-  backup_configuration = var.cloud_sql_config.backup_configuration
-  maintenance_window   = var.cloud_sql_config.maintenance_window
+  instance_settings           = var.cloud_sql_config.instance_settings
+  backup_configuration        = var.cloud_sql_config.backup_configuration
+  maintenance_window          = var.cloud_sql_config.maintenance_window
+  database_password_secret_id = module.secrets.db_password_secret_id
 
-  depends_on = [module.vpc]
+  depends_on = [module.vpc, module.secrets]
+}
+
+module "secrets" {
+  source = "../../modules/secrets"
+
+  project_id        = var.project_id
+  environment       = var.environment
+  region            = var.region
+  database_password = var.database_password
+
+  depends_on = [module.enable_apis]
 }
