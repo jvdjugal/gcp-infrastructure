@@ -78,10 +78,9 @@ resource "google_container_cluster" "primary" {
   initial_node_count       = 1
 
   private_cluster_config {
-    enable_private_nodes    = true  # Disable public IP for nodes
-    enable_private_endpoint = false # API server access via private IP only
-
-    master_ipv4_cidr_block = "172.16.0.0/28" # CIDR block for the private master endpoint
+    enable_private_nodes    = true
+    enable_private_endpoint = false
+    master_ipv4_cidr_block  = var.master_ipv4_cidr_block # Use the variable here
   }
 
 

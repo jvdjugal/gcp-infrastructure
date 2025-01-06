@@ -99,3 +99,6 @@ cloud_sql_config = {
     update_track = "stable"
   }
 }
+
+# GKE master network configuration
+master_ipv4_cidr_block = "192.168.1.0/28"

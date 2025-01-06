@@ -78,3 +78,7 @@ variable "gke_sa_permissions" {
 
 }
 
+variable "master_ipv4_cidr_block" {
+  description = "The IP range in CIDR notation for the GKE master network"
+  type        = string
+}

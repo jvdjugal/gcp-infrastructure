@@ -27,9 +27,11 @@ module "GKE" {
 
 
 
-  subnet_id           = module.vpc.subnet_ids["my-vpc-gke-subnet"]
-  pods_range_name     = var.pods_range_name
-  services_range_name = var.services_range_name
+  subnet_id              = module.vpc.subnet_ids["my-vpc-gke-subnet"]
+  pods_range_name        = var.pods_range_name
+  services_range_name    = var.services_range_name
+  master_ipv4_cidr_block = var.master_ipv4_cidr_block # Add this line
+
 
   depends_on = [module.vpc]
 }
