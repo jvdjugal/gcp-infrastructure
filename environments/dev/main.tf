@@ -37,14 +37,19 @@ module "GKE" {
 module "cloud_sql" {
   source = "../../modules/cloud-sql"
 
-  project_id  = var.project_id
-  environment = var.environment
-  region      = var.region
-  network_id  = module.vpc.network_id["my-vpc"]
+  project_id     = var.project_id
+  environment    = var.environment
+  region         = var.region
+  network_id     = module.vpc.network_id["my-vpc"]
+  vpc_connection = module.vpc.private_vpc_connection
 
-  database_name     = "mydb"
-  database_user     = "dbuser"
-  database_password = var.database_password # Add this to your variables
+  database_name     = var.cloud_sql_config.database_name
+  database_user     = var.cloud_sql_config.database_user
+  database_password = var.database_password
+
+  instance_settings    = var.cloud_sql_config.instance_settings
+  backup_configuration = var.cloud_sql_config.backup_configuration
+  maintenance_window   = var.cloud_sql_config.maintenance_window
 
   depends_on = [module.vpc]
 }

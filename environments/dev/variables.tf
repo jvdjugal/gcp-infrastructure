@@ -113,6 +113,31 @@ variable "gke_sa_permissions" {
 }
 
 
+
+# Cloud SQL Variables
+variable "cloud_sql_config" {
+  description = "Configuration for Cloud SQL instance"
+  type = object({
+    database_name = string
+    database_user = string
+    instance_settings = object({
+      tier              = string
+      availability_type = string
+      disk_size         = number
+      disk_type         = string
+    })
+    backup_configuration = object({
+      enabled    = bool
+      start_time = string
+    })
+    maintenance_window = object({
+      day          = number
+      hour         = number
+      update_track = string
+    })
+  })
+}
+
 variable "database_password" {
   description = "Password for the database user"
   type        = string

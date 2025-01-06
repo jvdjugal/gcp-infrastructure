@@ -17,37 +17,23 @@ resource "google_sql_database_instance" "instance" {
   project          = var.project_id
   region           = var.region
 
-  depends_on = [google_service_networking_connection.private_vpc_connection]
+  depends_on = [var.vpc_connection]
 
   settings {
-    tier              = "db-f1-micro" # Smallest available machine type
-    availability_type = "ZONAL"       # Use ZONAL for development to reduce costs
-    disk_size         = 10            # Minimum disk size in GB
-    disk_type         = "PD_SSD"      # Using SSD for better performance
-
-    ip_configuration {
-      ipv4_enabled    = false # Disable public IP
-      private_network = var.network_id
-
-      # Add authorized networks if needed
-      dynamic "authorized_networks" {
-        for_each = var.authorized_networks
-        content {
-          name  = authorized_networks.value.name
-          value = authorized_networks.value.cidr
-        }
-      }
-    }
+    tier              = var.instance_settings.tier
+    availability_type = var.instance_settings.availability_type
+    disk_size         = var.instance_settings.disk_size
+    disk_type         = var.instance_settings.disk_type
 
     backup_configuration {
-      enabled    = true
-      start_time = "23:00" # 11 PM UTC
+      enabled    = var.backup_configuration.enabled
+      start_time = var.backup_configuration.start_time
     }
 
     maintenance_window {
-      day          = 1 # Monday
-      hour         = 4 # 4 AM
-      update_track = "stable"
+      day          = var.maintenance_window.day
+      hour         = var.maintenance_window.hour
+      update_track = var.maintenance_window.update_track
     }
   }
 

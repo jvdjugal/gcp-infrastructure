@@ -42,3 +42,33 @@ variable "authorized_networks" {
   }))
   default = []
 }
+
+variable "vpc_connection" {
+  description = "The private VPC connection from the VPC module"
+  type        = any # Using 'any' type since we're passing a complete resource
+}
+
+variable "instance_settings" {
+  description = "Settings for the database instance"
+  type = object({
+    tier              = string
+    availability_type = string
+    disk_size         = number
+    disk_type         = string
+  })
+}
+variable "backup_configuration" {
+  description = "Backup configuration for the database"
+  type = object({
+    enabled    = bool
+    start_time = string
+  })
+}
+variable "maintenance_window" {
+  description = "Maintenance window configuration"
+  type = object({
+    day          = number
+    hour         = number
+    update_track = string
+  })
+}

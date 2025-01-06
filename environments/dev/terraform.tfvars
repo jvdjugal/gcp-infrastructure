@@ -79,4 +79,23 @@ gke_sa_permissions = [
   "roles/storage.objectViewer"
 ]
 
-
+# Cloud SQL Configuration
+cloud_sql_config = {
+  database_name = "mydb"
+  database_user = "dbuser"
+  instance_settings = {
+    tier              = "db-f1-micro"
+    availability_type = "ZONAL"
+    disk_size         = 10
+    disk_type         = "PD_SSD"
+  }
+  backup_configuration = {
+    enabled    = true
+    start_time = "23:00"
+  }
+  maintenance_window = {
+    day          = 1
+    hour         = 4
+    update_track = "stable"
+  }
+}

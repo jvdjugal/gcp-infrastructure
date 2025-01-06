@@ -17,6 +17,11 @@ output "network_id" {
   value = { for vpc_name, vpc in google_compute_network.vpc : vpc_name => vpc.self_link }
 }
 
+output "private_vpc_connection" {
+  description = "The private VPC connection resource"
+  value       = google_service_networking_connection.private_vpc_connection
+}
+
 
 
 variable "vpc_name" {
