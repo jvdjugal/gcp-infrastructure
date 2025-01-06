@@ -79,7 +79,11 @@ variable "database_password_secret_id" {
   description = "Secret Manager ID for the database password"
   type        = string
 }
-
+variable "generated_db_password" {
+  description = "The generated database password"
+  type        = string
+  sensitive   = true
+}
 
 
 

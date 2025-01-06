@@ -57,9 +57,6 @@ node_machine_type          = "e2-micro"
 node_disk_size_gb          = 30
 node_disk_type             = "pd-ssd"
 
-
-
-
 zone = "us-central1-a"
 
 # Required APIs
@@ -71,10 +68,9 @@ apis = [
   "container.googleapis.com",
   "servicenetworking.googleapis.com",
   "dns.googleapis.com",
-  "secretmanager.googleapis.com"
+  "secretmanager.googleapis.com",
+  "cloudkms.googleapis.com" # Add this line
 ]
-
-
 
 # Permission List in .tfvars file
 gke_sa_permissions = [
