@@ -5,7 +5,7 @@ environment = "dev"
 
 #cloud-sql
 # Cloud SQL Configuration
-database_password = "your-secure-password-here"
+//database_password = "your-secure-password-here"
 
 # VPC Configuration
 vpcs = {

@@ -137,18 +137,19 @@ variable "cloud_sql_config" {
     })
   })
 }
-
+/*
 variable "database_password" {
   description = "Password for the database user"
   type        = string
   sensitive   = true
 }
-
+*/
 variable "master_ipv4_cidr_block" {
   description = "The IP range in CIDR notation for the GKE master network"
   type        = string
   default     = "192.168.1.0/28" # This gives us 16 IP addresses for the master nodes
 }
+
 
 
 

@@ -33,11 +33,6 @@ variable "database_user" {
   type        = string
 }
 
-variable "database_password" {
-  description = "The password for the default user"
-  type        = string
-  sensitive   = true
-}
 
 variable "instance_settings" {
   description = "Settings for the database instance"
@@ -75,15 +70,8 @@ variable "authorized_networks" {
   default = []
 }
 
-variable "database_password_secret_id" {
-  description = "Secret Manager ID for the database password"
-  type        = string
-}
-variable "generated_db_password" {
-  description = "The generated database password"
-  type        = string
-  sensitive   = true
-}
+
+
 
 
 
