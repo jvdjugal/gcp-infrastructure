@@ -1,0 +1,10 @@
+# environments/dev/k8s/backend/configmap.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: backend-config
+data:
+  NODE_ENV: "production"
+  PORT: "3000"
+  API_VERSION: "v1"
+  CORS_ORIGIN: "http://frontend-service"
