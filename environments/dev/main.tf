@@ -14,7 +14,7 @@ module "vpc" {
 
   depends_on = [module.enable_apis] # Add this line to ensure APIs are enabled first
 }
-/*
+
 module "GKE" {
   source = "../../modules/GKE"
 
@@ -65,4 +65,4 @@ module "secrets" {
 
   depends_on = [module.enable_apis]
 }
-*/
+
