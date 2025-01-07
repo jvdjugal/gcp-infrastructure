@@ -1,4 +1,3 @@
-# environments/dev/k8s/frontend/deployment.yaml
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -16,7 +15,7 @@ spec:
     spec:
       containers:
       - name: frontend
-        image: gcr.io/dspl-24-poc/frontend:latest
+        image: dspl-jugal-pocs-frontend:latest  # Updated image name
         ports:
         - containerPort: 80
         env:

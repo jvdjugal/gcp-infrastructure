@@ -1,0 +1,5 @@
+flask==2.0.1
+flask-cors==3.0.10
+mysql-connector-python==8.0.26
+git+https://github.com/iovisor/bcc.git@v0.29.1#egg=bcc
+
