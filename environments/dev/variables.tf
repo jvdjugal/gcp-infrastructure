@@ -150,6 +150,27 @@ variable "master_ipv4_cidr_block" {
   default     = "192.168.1.0/28" # This gives us 16 IP addresses for the master nodes
 }
 
+variable "repository_id" {
+  description = "ID of the Artifact Registry repository"
+  type        = string
+}
+
+variable "location" {
+  description = "Location for the Artifact Registry repository"
+  type        = string
+}
+
+variable "description" {
+  description = "Description of the Artifact Registry repository"
+  type        = string
+  default     = "Artifact Registry repository"
+}
+
+variable "format" {
+  description = "Format of the Artifact Registry repository (e.g., DOCKER, MAVEN)"
+  type        = string
+  default     = "DOCKER"
+}
 
 
 

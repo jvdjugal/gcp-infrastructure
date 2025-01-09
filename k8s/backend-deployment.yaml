@@ -14,21 +14,6 @@ spec:
     spec:
       containers:
       - name: backend
-        image: gcr.io/dspl-24-poc/backend:latest
+        image: us-central1-docker.pkg.dev/dspl-24-poc/dev-app-repo/backend:latest
         ports:
-        - containerPort: 5000
-        env:
-        - name: DB_HOST
-          value: "127.0.0.1"
-        - name: DB_USER
-          valueFrom:
-            secretKeyRef:
-              name: mysql-credentials
-              key: username
-        - name: DB_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: mysql-credentials
-              key: password
-        - name: DB_NAME
-          value: "mydb"
+        - containerPort: 8080

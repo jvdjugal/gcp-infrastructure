@@ -62,6 +62,8 @@ zone = "us-central1-a"
 # Required APIs
 apis = [
   "cloudresourcemanager.googleapis.com",
+  "artifactregistry.googleapis.com",
+
   "iam.googleapis.com",
   "compute.googleapis.com",
   "sqladmin.googleapis.com",
@@ -75,7 +77,11 @@ apis = [
 # Permission List in .tfvars file
 gke_sa_permissions = [
   "roles/container.nodeServiceAgent",
-  "roles/storage.objectViewer"
+  "roles/storage.objectViewer",
+  "roles/artifactregistry.reader",
+  "roles/storage.objectViewer",
+  "roles/compute.networkAdmin",
+  "roles/compute.admin"
 ]
 
 # Cloud SQL Configuration
@@ -102,3 +108,13 @@ cloud_sql_config = {
 
 # GKE master network configuration
 master_ipv4_cidr_block = "192.168.1.0/28"
+
+#Artifact Repo
+
+
+repository_id = "dev-app-repo"
+location      = "us-central1"
+description   = "Dev environment repository for the application"
+format        = "DOCKER"
+
+

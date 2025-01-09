@@ -14,6 +14,6 @@ spec:
     spec:
       containers:
       - name: frontend
-        image: gcr.io/dspl-24-poc/frontend:latest
+        image: us-central1-docker.pkg.dev/dspl-24-poc/dev-app-repo/frontend:latest
         ports:
         - containerPort: 80
