@@ -2,6 +2,9 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: frontend
+  namespace: frontend-namespace  # Frontend namespace
+  labels:
+    app: frontend
 spec:
   replicas: 2
   selector:
@@ -17,3 +20,20 @@ spec:
         image: us-central1-docker.pkg.dev/dspl-24-poc/dev-app-repo/frontend:latest
         ports:
         - containerPort: 80
+        env:
+        - name: API_URL
+          value: "http://backend-service.backend-namespace.svc.cluster.local:8080"  # Updated to use the backend service from the backend namespace
+        volumeMounts:
+        - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+          name: kube-api-access-rrcdf
+          readOnly: true
+      volumes:
+      - name: kube-api-access-rrcdf
+        projected:
+          sources:
+          - serviceAccountToken:
+              expirationSeconds: 3600
+              path: token
+          - configMap:
+              name: kube-root-ca.crt
+          - downwardAPI: {}

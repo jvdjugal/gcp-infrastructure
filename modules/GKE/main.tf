@@ -7,6 +7,73 @@ resource "google_service_account" "gke_sa" {
   project      = var.project_id
 }
 
+resource "google_service_account" "bastion_sa" {
+  account_id   = "${var.bastion_instance_name}-sa"
+  display_name = "Bastion Host Service Account"
+  project      = var.project_id
+}
+
+resource "google_compute_instance" "bastion" {
+  name         = var.bastion_instance_name
+  machine_type = var.bastion_machine_type
+  zone         = var.zone
+  project      = var.project_id
+
+  boot_disk {
+    initialize_params {
+      image = var.bastion_image
+    }
+  }
+
+  network_interface {
+    network    = var.network_id
+    subnetwork = var.subnet_id
+
+    access_config {
+      // Ephemeral IP
+    }
+  }
+
+  metadata = {
+    enable-oslogin = "TRUE"
+  }
+
+  service_account {
+    email  = google_service_account.bastion_sa.email
+    scopes = ["cloud-platform"]
+  }
+
+  tags = var.bastion_tags
+}
+
+resource "google_compute_firewall" "iap_to_bastion" {
+  name    = var.iap_firewall_name
+  network = var.network_id
+  project = var.project_id
+
+  allow {
+    protocol = "tcp"
+    ports    = ["22"]
+  }
+
+  source_ranges = var.iap_source_ranges
+  target_tags   = var.bastion_tags
+}
+
+resource "google_compute_firewall" "iap_to_gke" {
+  name    = "${var.cluster_name}-allow-iap"
+  network = var.network_id
+  project = var.project_id
+
+  allow {
+    protocol = "tcp"
+    ports    = ["22", "443", "10250", "15017"] # Required ports for GKE access
+  }
+
+  source_ranges = ["35.235.240.0/20"]         # IAP range
+  target_tags   = ["gke-${var.cluster_name}"] # Only use target_tags
+}
+
 
 
 # IAM Role for the GKE Service Account to interact with resources
@@ -79,9 +146,21 @@ resource "google_container_cluster" "primary" {
 
   private_cluster_config {
     enable_private_nodes    = true
-    enable_private_endpoint = false
-    master_ipv4_cidr_block  = var.master_ipv4_cidr_block # Use the variable here
+    enable_private_endpoint = true
+    master_ipv4_cidr_block  = var.master_ipv4_cidr_block
+
+    master_global_access_config {
+      enabled = true
+    }
   }
+
+  master_authorized_networks_config {
+    cidr_blocks {
+      cidr_block   = var.authorized_network_cidr
+      display_name = "VPC Access"
+    }
+  }
+
 
 
   workload_identity_config {
@@ -124,6 +203,8 @@ resource "google_container_node_pool" "primary_nodes" {
     machine_type = var.node_machine_type
     disk_size_gb = var.node_disk_size_gb
     disk_type    = var.node_disk_type
+
+
 
     # Shielded instance configuration for secure VMs
     shielded_instance_config {

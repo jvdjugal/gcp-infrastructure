@@ -172,12 +172,57 @@ variable "format" {
   default     = "DOCKER"
 }
 
+variable "authorized_network_cidr" {
+  description = "CIDR block for master authorized networks"
+  type        = string
+}
 
 
 
 
 
 
+
+variable "master_global_access_config_enabled" {
+  description = "Enable master global access config"
+  type        = bool
+  default     = true
+}
+
+variable "bastion_cidr" {
+  description = "CIDR block for bastion host access"
+  type        = string
+}
+
+variable "bastion_instance_name" {
+  description = "Name of the bastion host instance"
+  type        = string
+}
+
+variable "bastion_machine_type" {
+  description = "Machine type for bastion host"
+  type        = string
+}
+
+variable "bastion_image" {
+  description = "Boot disk image for bastion host"
+  type        = string
+}
+
+variable "bastion_tags" {
+  description = "Network tags for bastion host"
+  type        = list(string)
+}
+
+variable "iap_firewall_name" {
+  description = "Name for the IAP firewall rule"
+  type        = string
+}
+
+variable "iap_source_ranges" {
+  description = "Source IP ranges for IAP access"
+  type        = list(string)
+}
 
 
 

@@ -2,6 +2,9 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: backend
+  namespace: backend-namespace
+  labels:
+    app: backend
 spec:
   replicas: 2
   selector:
@@ -12,8 +15,57 @@ spec:
       labels:
         app: backend
     spec:
+      serviceAccountName: dev-cluster-sa  # Use the GKE Service Account
       containers:
-      - name: backend
-        image: us-central1-docker.pkg.dev/dspl-24-poc/dev-app-repo/backend:latest
-        ports:
-        - containerPort: 8080
+        - name: cloudsql-proxy
+          image: gcr.io/cloudsql-docker/gce-proxy:latest
+          command:
+            - "/cloud_sql_proxy"
+            - "-dir=/cloudsql"
+            - "-instances=dspl-24-poc:us-central1:dspl-24-poc-dev-mysql-409d4344"
+          volumeMounts:
+            - mountPath: /cloudsql
+              name: cloudsql
+
+        - name: backend
+          image: us-central1-docker.pkg.dev/dspl-24-poc/dev-app-repo/backend:latest
+          ports:
+            - containerPort: 8080
+          env:
+            - name: DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: db-credentials
+                  key: username
+            - name: DB_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: db-credentials
+                  key: password
+            - name: DB_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: db-credentials
+                  key: database
+            - name: DB_SOCKET_DIR
+              value: /cloudsql  # Connect to Cloud SQL via the Unix socket
+          volumeMounts:
+            - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+              name: kube-api-access-hvc22
+              readOnly: true
+            - mountPath: /cloudsql
+              name: cloudsql
+
+      volumes:
+        - name: kube-api-access-hvc22
+          projected:
+            sources:
+              - serviceAccountToken:
+                  expirationSeconds: 3600
+                  path: token
+              - configMap:
+                  name: kube-root-ca.crt
+              - downwardAPI: {}
+        - name: cloudsql
+          emptyDir:
+            medium: Memory

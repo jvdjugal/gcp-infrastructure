@@ -1,18 +1,18 @@
 apiVersion: networking.k8s.io/v1
-kind: Ingress
+kind: NetworkPolicy
 metadata:
-  name: frontend-ingress
-  annotations:
-    kubernetes.io/ingress.class: "gce"  # For Google Cloud Load Balancer
+  name: frontend-network-policy
+  namespace: frontend-namespace
 spec:
-  rules:
-  - host: <frontend-ip-or-domain>
-    http:
-      paths:
-      - path: /
-        pathType: Prefix
-        backend:
-          service:
-            name: frontend-service
-            port:
-              number: 80
+  podSelector:
+    matchLabels:
+      app: frontend
+  policyTypes:
+  - Ingress
+  ingress:
+  - from:
+    - ipBlock:
+        cidr: 10.0.0.0/16  # Your VPC CIDR
+    ports:
+    - protocol: TCP
+      port: 80

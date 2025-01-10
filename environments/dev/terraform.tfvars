@@ -36,6 +36,12 @@ vpcs = {
         protocol      = "tcp"
         ports         = ["22", "80", "443"]
         source_ranges = ["10.0.0.0/16"]
+      },
+      {
+        name          = "allow-master-webhooks"
+        protocol      = "tcp"
+        ports         = ["443", "8443", "9443", "15017"]
+        source_ranges = ["192.168.1.0/28"] # Should match your master_ipv4_cidr_block
       }
     ]
   }
@@ -71,7 +77,8 @@ apis = [
   "servicenetworking.googleapis.com",
   "dns.googleapis.com",
   "secretmanager.googleapis.com",
-  "cloudkms.googleapis.com" # Add this line
+  "cloudkms.googleapis.com", # Add this line
+  "iap.googleapis.com"
 ]
 
 # Permission List in .tfvars file
@@ -81,7 +88,14 @@ gke_sa_permissions = [
   "roles/artifactregistry.reader",
   "roles/storage.objectViewer",
   "roles/compute.networkAdmin",
-  "roles/compute.admin"
+  "roles/compute.admin",
+  "roles/container.developer",
+  "roles/container.viewer",
+  "roles/iap.tunnelResourceAccessor",
+  "roles/compute.instanceAdmin",
+  "roles/compute.networkUser",
+  "roles/compute.instanceAdmin.v1",
+  "roles/cloudsql.client"
 ]
 
 # Cloud SQL Configuration
@@ -109,6 +123,8 @@ cloud_sql_config = {
 # GKE master network configuration
 master_ipv4_cidr_block = "192.168.1.0/28"
 
+authorized_network_cidr = "10.0.0.0/16"
+
 #Artifact Repo
 
 
@@ -118,3 +134,13 @@ description   = "Dev environment repository for the application"
 format        = "DOCKER"
 
 
+
+
+master_global_access_config_enabled = true
+bastion_cidr                        = "10.0.1.0/24"
+bastion_instance_name               = "gke-bastion"
+bastion_machine_type                = "e2-micro"
+bastion_image                       = "debian-cloud/debian-11"
+bastion_tags                        = ["bastion", "allow-iap"]
+iap_firewall_name                   = "allow-iap-to-bastion"
+iap_source_ranges                   = ["35.235.240.0/20"] # Google's IAP range

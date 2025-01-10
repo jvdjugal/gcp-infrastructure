@@ -1,18 +1,19 @@
 apiVersion: networking.k8s.io/v1
-kind: Ingress
+kind: NetworkPolicy
 metadata:
-  name: backend-ingress
-  annotations:
-    kubernetes.io/ingress.class: "gce"
+  name: backend-network-policy
+  namespace: backend-namespace
 spec:
-  rules:
-  - host: <backend-ip-or-domain>
-    http:
-      paths:
-      - path: /
-        pathType: Prefix
-        backend:
-          service:
-            name: backend-service
-            port:
-              number: 8080
+  podSelector:
+    matchLabels:
+      app: backend
+  policyTypes:
+  - Ingress
+  ingress:
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          name: frontend-namespace
+    ports:
+    - protocol: TCP
+      port: 8080
